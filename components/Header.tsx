@@ -1,10 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { PressScale } from "@/components/PressScale";
+import { UserAvatar } from "@/components/UserAvatar";
+import { useApp } from "@/context/AppContext";
 import { colors } from "@/components/ui/premium";
-
-const avatar =
-  "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=180&q=80";
 
 export function Header({
   title,
@@ -17,6 +16,9 @@ export function Header({
   onBellPress?: () => void;
   onAvatarPress?: () => void;
 }) {
+  const { profile } = useApp();
+  const avatarUri = profile.photo || profile.image;
+
   return (
     <View style={styles.header}>
       <View style={styles.titleBlock}>
@@ -31,7 +33,7 @@ export function Header({
           <View style={styles.dot} />
         </PressScale>
         <PressScale onPress={onAvatarPress}>
-          <Image source={{ uri: avatar }} style={styles.avatar} />
+          <UserAvatar imageUri={avatarUri} />
         </PressScale>
       </View>
     </View>
@@ -89,11 +91,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#EF4444",
     borderWidth: 1.5,
     borderColor: "#FFFFFF",
-  },
-  avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 18,
-    backgroundColor: "#FFFFFF",
   },
 });

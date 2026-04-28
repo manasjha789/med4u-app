@@ -1,184 +1,242 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { useState } from "react";
-import {
-  Image,
-  RefreshControl,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
-import { Header } from "@/components/Header";
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { PressScale } from "@/components/PressScale";
-import { SectionTitle } from "@/components/SectionTitle";
-import { DoctorCard } from "@/components/DoctorCard";
+import { UserAvatar } from "@/components/UserAvatar";
 import { useApp } from "@/context/AppContext";
-import { colors } from "@/components/ui/premium";
 
-const doctor =
+const colors = {
+  background: "#EEF4FF",
+  primary: "#2F6BFF",
+  dark: "#111827",
+  grey: "#6B7280",
+  white: "#FFFFFF",
+  mint: "#EAF8F3",
+  purple: "#8B5CF6",
+  orange: "#F59E0B",
+  teal: "#14B8A6",
+  border: "#E4ECF8",
+};
+
+const doctorImage =
   "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=260&q=80";
 
-const banners = [
-  ["Consult top doctors in 15 mins", "Private video calls with verified specialists.", "videocam"],
-  ["Flat 20% on medicines", "Genuine products, pharmacist verified.", "pricetag"],
-  ["Free home sample pickup", "Book trusted lab tests from home.", "flask"],
-] as const;
+type IonIconName = keyof typeof Ionicons.glyphMap;
+type MaterialIconName = keyof typeof MaterialCommunityIcons.glyphMap;
 
-const quickActions = [
-  ["Consult Now", "medical"],
-  ["Order Medicine", "medkit"],
-  ["Book Test", "flask"],
-  ["Emergency", "alert-circle"],
-] as const;
+const quickActions: {
+  title: string;
+  icon: IonIconName | MaterialIconName;
+  iconSet: "ion" | "material";
+  color: string;
+  route: string;
+}[] = [
+  { title: "Consult", icon: "stethoscope", iconSet: "material", color: colors.primary, route: "/bookDoctor" },
+  { title: "Order", icon: "medical-bag", iconSet: "material", color: colors.teal, route: "/(tabs)/medicine" },
+  { title: "Lab", icon: "flask-outline", iconSet: "ion", color: colors.purple, route: "/reports" },
+  { title: "Health", icon: "document-text-outline", iconSet: "ion", color: colors.orange, route: "/reports" },
+];
 
-const categories = [
-  ["General", "medical-outline"],
-  ["Cardio", "heart-outline"],
-  ["Dental", "happy-outline"],
-  ["Skin", "sparkles-outline"],
-  ["Neuro", "git-network-outline"],
-  ["Child", "accessibility-outline"],
-  ["Bones", "body-outline"],
-  ["Lungs", "leaf-outline"],
-] as const;
+const specialists: {
+  name: string;
+  count: string;
+  icon: IonIconName | MaterialIconName;
+  iconSet: "ion" | "material";
+  color: string;
+}[] = [
+  { name: "Cardio", count: "45+ Doctors", icon: "heart", iconSet: "ion", color: "#F43F5E" },
+  { name: "Neuro", count: "40+ Doctors", icon: "brain", iconSet: "material", color: colors.orange },
+  { name: "Dentist", count: "30+ Doctors", icon: "tooth-outline", iconSet: "material", color: colors.teal },
+  { name: "Skin", count: "25+ Doctors", icon: "person-outline", iconSet: "ion", color: colors.purple },
+];
+
+function SectionHeader({ title, onPress }: { title: string; onPress?: () => void }) {
+  return (
+    <View style={styles.sectionHeader}>
+      <Text style={styles.sectionTitle}>{title}</Text>
+      <PressScale onPress={onPress}>
+        <Text style={styles.viewAll}>View all</Text>
+      </PressScale>
+    </View>
+  );
+}
+
+function Header({ name, avatarUri }: { name: string; avatarUri?: string }) {
+  return (
+    <View style={styles.header}>
+      <View style={styles.headerCopy}>
+        <Text style={styles.greeting} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.86}>
+          Hello, {name} 👋
+        </Text>
+        <Text style={styles.morning}>Good Morning</Text>
+      </View>
+
+      <View style={styles.headerActions}>
+        <PressScale style={styles.headerButton} onPress={() => router.push("/notifications")}>
+          <Ionicons name="notifications-outline" size={24} color={colors.dark} />
+          <View style={styles.notificationDot} />
+        </PressScale>
+        <PressScale onPress={() => router.push("/(tabs)/profileTab" as never)}>
+          <UserAvatar imageUri={avatarUri} size={56} />
+        </PressScale>
+      </View>
+    </View>
+  );
+}
+
+function SearchBar() {
+  return (
+    <PressScale style={styles.searchBar} onPress={() => router.push("/search")}>
+      <Ionicons name="search-outline" size={25} color="#7B8797" />
+      <TextInput
+        editable={false}
+        placeholder="Search doctors, meds"
+        placeholderTextColor="#7B8797"
+        numberOfLines={1}
+        style={styles.searchInput}
+      />
+      <View style={styles.micButton}>
+        <Ionicons name="mic-outline" size={22} color={colors.white} />
+      </View>
+    </PressScale>
+  );
+}
+
+function QuickActionGrid() {
+  return (
+    <View style={styles.quickGrid}>
+      {quickActions.map((item) => (
+        <PressScale key={item.title} style={styles.quickCard} onPress={() => router.push(item.route as never)}>
+          {item.iconSet === "material" ? (
+            <MaterialCommunityIcons name={item.icon as MaterialIconName} size={24} color={item.color} />
+          ) : (
+            <Ionicons name={item.icon as IonIconName} size={24} color={item.color} />
+          )}
+          <Text style={styles.quickText} numberOfLines={1}>
+            {item.title}
+          </Text>
+        </PressScale>
+      ))}
+    </View>
+  );
+}
+
+function HeroBanner() {
+  return (
+    <LinearGradient
+      colors={["#2563EB", "#4F9BFF"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.heroBanner}
+    >
+      <View style={styles.videoIconBox}>
+        <Ionicons name="videocam" size={24} color={colors.white} />
+      </View>
+      <View style={styles.heroTextBlock}>
+        <Text style={styles.heroTitle} numberOfLines={2}>
+          Consult Doctors in 15 mins
+        </Text>
+        <Text style={styles.heroSubtitle} numberOfLines={1}>
+          Verified specialists
+        </Text>
+      </View>
+      <Image source={{ uri: doctorImage }} style={styles.heroDoctor} />
+      <PressScale style={styles.bookButton} onPress={() => router.push("/bookDoctor")}>
+        <Text style={styles.bookText}>Book Now →</Text>
+      </PressScale>
+    </LinearGradient>
+  );
+}
+
+function NextAppointment() {
+  return (
+    <PressScale style={styles.appointmentCard} onPress={() => router.push("/doctorDetails" as never)}>
+      <View style={styles.appointmentHeader}>
+        <Text style={styles.appointmentTitle} numberOfLines={1}>
+          Your Next Appointment
+        </Text>
+        <View style={styles.timeChip}>
+          <Text style={styles.timeChipText}>50 min</Text>
+        </View>
+      </View>
+
+      <View style={styles.doctorRow}>
+        <Image source={{ uri: doctorImage }} style={styles.appointmentDoctor} />
+        <View style={styles.doctorRowText}>
+          <Text style={styles.doctorName}>Dr. Abhi</Text>
+          <Text style={styles.doctorSpeciality}>Orthopedic Specialist</Text>
+        </View>
+      </View>
+
+      <View style={styles.appointmentMeta}>
+        <View style={styles.videoMeta}>
+          <Ionicons name="videocam" size={18} color={colors.purple} />
+        </View>
+        <View style={styles.dateMetaItem}>
+          <Ionicons name="calendar-outline" size={18} color={colors.dark} />
+          <Text style={styles.metaText} numberOfLines={1}>
+            12th January, Monday
+          </Text>
+        </View>
+        <View style={styles.timeMetaItem}>
+          <Ionicons name="time-outline" size={18} color={colors.dark} />
+          <Text style={styles.metaText} numberOfLines={1}>
+            4:00 PM
+          </Text>
+        </View>
+      </View>
+    </PressScale>
+  );
+}
+
+function ExploreSpecialists() {
+  return (
+    <View style={styles.section}>
+      <SectionHeader title="Explore Specialists" onPress={() => router.push("/bookDoctor")} />
+      <View style={styles.specialistRow}>
+        {specialists.map((item) => (
+          <PressScale
+            key={item.name}
+            style={styles.specialistCard}
+            onPress={() =>
+              router.push({
+                pathname: "/bookDoctor",
+            params: { specialization: item.name },
+              })
+            }
+          >
+            {item.iconSet === "material" ? (
+              <MaterialCommunityIcons name={item.icon as MaterialIconName} size={26} color={item.color} />
+            ) : (
+              <Ionicons name={item.icon as IonIconName} size={26} color={item.color} />
+            )}
+            <Text style={styles.specialistName} numberOfLines={1}>
+              {item.name}
+            </Text>
+            <Text style={styles.specialistCount} numberOfLines={1}>
+              {item.count}
+            </Text>
+          </PressScale>
+        ))}
+      </View>
+    </View>
+  );
+}
 
 export default function HomeScreen() {
-  const { displayName } = useApp();
-  const [refreshing, setRefreshing] = useState(false);
-
-  const refresh = () => {
-    setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 650);
-  };
+  const { profile, displayName } = useApp();
+  const avatarUri = profile.photo || profile.image;
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.primary} />}
-      >
-        <Header
-          title={`Hello, ${displayName}!`}
-          subtitle="How are you feeling today?"
-          onBellPress={() => router.push("/notifications")}
-          onAvatarPress={() => router.push("/(tabs)/profileTab" as never)}
-        />
-
-        <PressScale style={styles.search} onPress={() => router.push("/search")}>
-          <Ionicons name="search-outline" size={21} color="#94A3B8" />
-          <TextInput
-            editable={false}
-            placeholder="Search doctors, medicines, clinics"
-            placeholderTextColor="#94A3B8"
-            style={styles.searchInput}
-          />
-        </PressScale>
-
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.actionRow}>
-          {quickActions.map(([label, icon]) => (
-            <PressScale
-              key={label}
-              style={styles.quickPill}
-              onPress={() => {
-                if (label === "Order Medicine") router.push("/(tabs)/medicine");
-                else if (label === "Book Test") router.push("/reports");
-                else if (label === "Emergency") router.push("/videoCall");
-                else router.push("/bookDoctor");
-              }}
-            >
-              <Ionicons name={icon} size={18} color={colors.primary} />
-              <Text style={styles.quickText}>{label}</Text>
-            </PressScale>
-          ))}
-        </ScrollView>
-
-        <ScrollView horizontal pagingEnabled showsHorizontalScrollIndicator={false} contentContainerStyle={styles.bannerRow}>
-          {banners.map(([title, text, icon], index) => (
-            <LinearGradient
-              key={title}
-              colors={index === 1 ? ["#0F172A", "#2563EB"] : ["#2563EB", "#60A5FA"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.heroCard}
-            >
-              <View style={styles.heroCopy}>
-                <Text style={styles.heroTitle}>{title}</Text>
-                <Text style={styles.heroText}>{text}</Text>
-              </View>
-              <View style={styles.heroIcon}>
-                <Ionicons name={icon} size={34} color="#FFFFFF" />
-              </View>
-            </LinearGradient>
-          ))}
-        </ScrollView>
-        <View style={styles.dots}>
-          {[0, 1, 2].map((dot) => <View key={dot} style={[styles.dot, dot === 0 && styles.activeDot]} />)}
-        </View>
-
-        <SectionTitle title="Explore care" />
-        <View style={styles.categoryGrid}>
-          {categories.map(([label, icon]) => (
-            <PressScale
-              key={label}
-              style={styles.category}
-              onPress={() => router.push({ pathname: "/bookDoctor", params: { specialization: label } })}
-            >
-              <View style={styles.categoryCircle}>
-                <Ionicons name={icon} size={24} color={colors.primary} />
-              </View>
-              <Text style={styles.categoryText}>{label}</Text>
-            </PressScale>
-          ))}
-        </View>
-
-        <SectionTitle title="Upcoming appointment" action="View all" onPress={() => router.push("/bookDoctor")} />
-        <LinearGradient colors={["rgba(37,99,235,0.96)", "#60A5FA"]} style={styles.appointment}>
-          <View style={styles.appointmentTop}>
-            <Image source={{ uri: doctor }} style={styles.appointmentImage} />
-            <View style={styles.appointmentInfo}>
-              <Text style={styles.appointmentName}>Dr Abhi</Text>
-              <Text style={styles.appointmentRole}>Orthopedic Specialist</Text>
-              <Text style={styles.appointmentTime}>Today • 10:30 AM</Text>
-            </View>
-          </View>
-          <View style={styles.appointmentActions}>
-            <PressScale style={styles.joinButton} onPress={() => router.push("/videoCall")}>
-              <Ionicons name="videocam" size={17} color={colors.primary} />
-              <Text style={styles.joinText}>Join Call</Text>
-            </PressScale>
-            <PressScale style={styles.rescheduleButton} onPress={() => router.push("/doctorSlots")}>
-              <Text style={styles.rescheduleText}>Reschedule</Text>
-            </PressScale>
-          </View>
-        </LinearGradient>
-
-        <SectionTitle title="Recent doctors" action="See all" onPress={() => router.push("/bookDoctor")} />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <DoctorCard name="Dr. Sarah Jenkins" specialty="Cardiologist" onPress={() => router.push("/doctorDetails" as never)} />
-          <DoctorCard name="Dr. Neha Rao" specialty="Dermatologist" onPress={() => router.push("/doctorDetails" as never)} />
-        </ScrollView>
-
-        <SectionTitle title="Daily health nudges" />
-        <View style={styles.tips}>
-          {[
-            ["Water reminder", "Drink 2 glasses before lunch", "water-outline"],
-            ["Sleep reminder", "Wind down by 10:30 PM", "moon-outline"],
-            ["Daily steps", "2,400 steps left today", "walk-outline"],
-          ].map(([title, text, icon]) => (
-            <View key={title} style={styles.tip}>
-              <Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={23} color={colors.primary} />
-              <View style={styles.tipTextWrap}>
-                <Text style={styles.tipTitle}>{title}</Text>
-                <Text style={styles.tipText}>{text}</Text>
-              </View>
-            </View>
-          ))}
-        </View>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <Header name={displayName} avatarUri={avatarUri} />
+        <SearchBar />
+        <QuickActionGrid />
+        <HeroBanner />
+        <NextAppointment />
+        <ExploreSpecialists />
       </ScrollView>
     </SafeAreaView>
   );
@@ -186,64 +244,235 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  content: { paddingHorizontal: 20, paddingTop: 48, paddingBottom: 124 },
-  search: {
-    height: 60,
+  content: { paddingHorizontal: 20, paddingTop: 48, paddingBottom: 126 },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 24,
+  },
+  headerCopy: { flex: 1, minWidth: 0, paddingRight: 12 },
+  greeting: { color: colors.dark, fontSize: 24, fontWeight: "900", letterSpacing: 0 },
+  morning: { color: colors.grey, fontSize: 14, fontWeight: "700", marginTop: 5 },
+  headerActions: { flexDirection: "row", alignItems: "center", gap: 10 },
+  headerButton: {
+    width: 56,
+    height: 56,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 28,
+    backgroundColor: colors.white,
+    shadowColor: "#9DB2D3",
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.16,
+    shadowRadius: 24,
+    elevation: 8,
+  },
+  notificationDot: {
+    position: "absolute",
+    top: 15,
+    right: 15,
+    width: 9,
+    height: 9,
+    borderRadius: 5,
+    backgroundColor: "#EF4444",
+    borderWidth: 1.5,
+    borderColor: colors.white,
+  },
+  searchBar: {
+    height: 56,
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 22,
     backgroundColor: colors.white,
-    paddingHorizontal: 18,
-    borderWidth: 1,
-    borderColor: "#D9E4F4",
-    shadowColor: "#8EA8CE",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.08,
-    shadowRadius: 18,
-    elevation: 3,
+    paddingLeft: 16,
+    paddingRight: 8,
+    shadowColor: "#9DB2D3",
+    shadowOffset: { width: 0, height: 13 },
+    shadowOpacity: 0.12,
+    shadowRadius: 24,
+    elevation: 6,
   },
-  searchInput: { flex: 1, marginLeft: 10, color: colors.dark, fontSize: 15, fontWeight: "700" },
-  actionRow: { gap: 10, paddingTop: 16, paddingBottom: 4 },
-  quickPill: {
+  searchInput: { flex: 1, minWidth: 0, marginLeft: 10, color: colors.dark, fontSize: 15, fontWeight: "700" },
+  micButton: {
+    width: 46,
+    height: 46,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 23,
+    backgroundColor: colors.primary,
+  },
+  quickGrid: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  quickCard: {
+    width: 78,
+    height: 96,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 18,
+    backgroundColor: colors.white,
+    paddingHorizontal: 10,
+    shadowColor: "#9DB2D3",
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.12,
+    shadowRadius: 24,
+    elevation: 6,
+  },
+  quickText: {
+    color: colors.dark,
+    fontSize: 13,
+    fontWeight: "700",
+    textAlign: "center",
+    marginTop: 12,
+  },
+  heroBanner: {
+    height: 82,
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-    backgroundColor: colors.white,
-    borderRadius: 999,
-    paddingHorizontal: 15,
-    paddingVertical: 11,
-    borderWidth: 1,
-    borderColor: "#DBEAFE",
+    borderRadius: 22,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    marginTop: 22,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 15 },
+    shadowOpacity: 0.24,
+    shadowRadius: 24,
+    elevation: 8,
   },
-  quickText: { color: colors.dark, fontSize: 13, fontWeight: "900" },
-  bannerRow: { gap: 14, paddingTop: 16 },
-  heroCard: { width: 318, minHeight: 154, borderRadius: 30, padding: 22, flexDirection: "row", alignItems: "center" },
-  heroCopy: { flex: 1, paddingRight: 12 },
-  heroTitle: { color: colors.white, fontSize: 24, fontWeight: "900", lineHeight: 30 },
-  heroText: { color: "#DBEAFE", fontSize: 14, fontWeight: "700", lineHeight: 20, marginTop: 8 },
-  heroIcon: { width: 62, height: 62, alignItems: "center", justifyContent: "center", borderRadius: 22, backgroundColor: "rgba(255,255,255,0.18)" },
-  dots: { flexDirection: "row", gap: 6, justifyContent: "center", marginTop: 12 },
-  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: "#B8C7DD" },
-  activeDot: { width: 18, backgroundColor: colors.primary },
-  categoryGrid: { flexDirection: "row", flexWrap: "wrap", rowGap: 16 },
-  category: { width: "25%", alignItems: "center" },
-  categoryCircle: { width: 62, height: 62, alignItems: "center", justifyContent: "center", borderRadius: 31, backgroundColor: colors.white },
-  categoryText: { color: colors.dark, fontSize: 12, fontWeight: "900", marginTop: 8 },
-  appointment: { borderRadius: 30, padding: 20, shadowColor: colors.primary, shadowOffset: { width: 0, height: 16 }, shadowOpacity: 0.22, shadowRadius: 24, elevation: 8 },
-  appointmentTop: { flexDirection: "row", alignItems: "center" },
-  appointmentImage: { width: 74, height: 74, borderRadius: 24, borderWidth: 3, borderColor: "rgba(255,255,255,0.45)" },
-  appointmentInfo: { flex: 1, marginLeft: 15 },
-  appointmentName: { color: colors.white, fontSize: 21, fontWeight: "900" },
-  appointmentRole: { color: "#DBEAFE", fontSize: 14, fontWeight: "700", marginTop: 4 },
-  appointmentTime: { color: colors.white, fontSize: 14, fontWeight: "900", marginTop: 10 },
-  appointmentActions: { flexDirection: "row", gap: 10, marginTop: 18 },
-  joinButton: { flex: 1, height: 48, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 7, borderRadius: 17, backgroundColor: colors.white },
-  joinText: { color: colors.primary, fontSize: 14, fontWeight: "900" },
-  rescheduleButton: { flex: 1, height: 48, alignItems: "center", justifyContent: "center", borderRadius: 17, backgroundColor: "rgba(255,255,255,0.18)", borderWidth: 1, borderColor: "rgba(255,255,255,0.34)" },
-  rescheduleText: { color: colors.white, fontSize: 14, fontWeight: "900" },
-  tips: { gap: 12 },
-  tip: { flexDirection: "row", alignItems: "center", backgroundColor: colors.white, borderRadius: 22, padding: 16 },
-  tipTextWrap: { marginLeft: 13, flex: 1 },
-  tipTitle: { color: colors.dark, fontSize: 15, fontWeight: "900" },
-  tipText: { color: colors.grey, fontSize: 13, fontWeight: "700", marginTop: 4 },
+  videoIconBox: {
+    width: 52,
+    height: 52,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 17,
+    backgroundColor: "rgba(255,255,255,0.16)",
+    marginRight: 10,
+  },
+  heroTextBlock: { flex: 1, minWidth: 0, justifyContent: "center", paddingRight: 8 },
+  heroTitle: { color: colors.white, fontSize: 18, lineHeight: 21, fontWeight: "800" },
+  heroSubtitle: { color: "rgba(255,255,255,0.9)", fontSize: 12, fontWeight: "600", marginTop: 2 },
+  heroDoctor: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    borderWidth: 3,
+    borderColor: "rgba(255,255,255,0.65)",
+    marginRight: 8,
+  },
+  bookButton: {
+    width: 124,
+    height: 42,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 21,
+    backgroundColor: colors.white,
+  },
+  bookText: { color: colors.primary, fontSize: 14, fontWeight: "900" },
+  section: { marginTop: 28 },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 16,
+  },
+  sectionTitle: { color: colors.dark, fontSize: 22, fontWeight: "900", letterSpacing: 0 },
+  viewAll: { color: colors.primary, fontSize: 16, fontWeight: "900" },
+  appointmentCard: {
+    height: 190,
+    borderRadius: 24,
+    backgroundColor: colors.mint,
+    paddingTop: 16,
+    paddingLeft: 18,
+    paddingRight: 18,
+    paddingBottom: 18,
+    marginTop: 30,
+    shadowColor: "#99C7BB",
+    shadowOffset: { width: 0, height: 18 },
+    shadowOpacity: 0.16,
+    shadowRadius: 28,
+    elevation: 8,
+  },
+  appointmentHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  appointmentTitle: { flex: 1, color: colors.dark, fontSize: 18, fontWeight: "800", paddingRight: 12 },
+  timeChip: {
+    width: 86,
+    height: 38,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 19,
+    backgroundColor: colors.white,
+  },
+  timeChipText: { color: colors.dark, fontSize: 15, fontWeight: "700" },
+  doctorRow: { flexDirection: "row", alignItems: "center", marginTop: 18 },
+  appointmentDoctor: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    borderWidth: 3,
+    borderColor: colors.white,
+  },
+  doctorRowText: { marginLeft: 14 },
+  doctorName: { color: colors.dark, fontSize: 20, fontWeight: "800" },
+  doctorSpeciality: { color: colors.grey, fontSize: 14, fontWeight: "700", marginTop: 4 },
+  appointmentMeta: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 18,
+  },
+  videoMeta: {
+    width: "14%",
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 12,
+    backgroundColor: colors.white,
+  },
+  dateMetaItem: {
+    width: "56%",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  timeMetaItem: {
+    width: "24%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: 6,
+  },
+  metaItem: { flexDirection: "row", alignItems: "center", gap: 6 },
+  metaText: { color: colors.dark, fontSize: 13, fontWeight: "600" },
+  specialistRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  specialistCard: {
+    width: 78,
+    height: 108,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 18,
+    backgroundColor: colors.white,
+    paddingVertical: 10,
+    shadowColor: "#9DB2D3",
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.1,
+    shadowRadius: 22,
+    elevation: 5,
+  },
+  specialistName: {
+    color: colors.dark,
+    fontSize: 13,
+    fontWeight: "900",
+    textAlign: "center",
+    marginTop: 10,
+  },
+  specialistCount: { color: colors.grey, fontSize: 11, fontWeight: "700", marginTop: 5, textAlign: "center" },
 });

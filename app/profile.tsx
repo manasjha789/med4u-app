@@ -1,4 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useMemo, useState } from "react";
 import {
@@ -9,6 +8,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { UserAvatar } from "@/components/UserAvatar";
 import { useApp, UserProfile } from "@/context/AppContext";
 import { colors, PrimaryButton } from "@/components/ui/premium";
 
@@ -30,6 +30,7 @@ const fields: { label: string; key: keyof UserProfile; keyboard?: "default" | "n
 export default function CreateProfileScreen() {
   const { profile, updateProfile } = useApp();
   const [values, setValues] = useState<UserProfile>(profile);
+  const avatarUri = values.photo || values.image;
   const completion = useMemo(() => {
     const filled = fields.filter((field) => values[field.key]?.trim()).length;
     return Math.max(12, Math.round((filled / fields.length) * 100));
@@ -50,9 +51,7 @@ export default function CreateProfileScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <View style={styles.iconCircle}>
-            <Ionicons name="person" size={38} color={colors.white} />
-          </View>
+          <UserAvatar imageUri={avatarUri} />
           <Text style={styles.title}>Create Profile</Text>
           <Text style={styles.subtitle}>Complete your health profile for faster, safer care.</Text>
         </View>
@@ -94,14 +93,6 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   content: { paddingHorizontal: 20, paddingTop: 42, paddingBottom: 32 },
   header: { alignItems: "center", marginBottom: 22 },
-  iconCircle: {
-    width: 88,
-    height: 88,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 30,
-    backgroundColor: colors.primary,
-  },
   title: { color: colors.dark, fontSize: 30, fontWeight: "900", marginTop: 14 },
   subtitle: { color: colors.grey, fontSize: 15, fontWeight: "600", textAlign: "center", marginTop: 6 },
   progressCard: { backgroundColor: colors.white, borderRadius: 22, padding: 18, marginBottom: 16 },

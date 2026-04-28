@@ -1,10 +1,8 @@
 import { router } from "expo-router";
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { UserAvatar } from "@/components/UserAvatar";
 import { colors, PrimaryButton, SectionHeader, ServiceCard } from "@/components/ui/premium";
 import { useApp } from "@/context/AppContext";
-
-const avatar =
-  "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=220&q=80";
 
 const menu = [
   ["My Appointments", "Upcoming and past visits", "calendar-outline", "/bookDoctor"],
@@ -18,12 +16,13 @@ const menu = [
 
 export default function ProfileTabScreen() {
   const { profile, displayName, resetProfile } = useApp();
+  const avatarUri = profile.photo || profile.image;
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.profileCard}>
-          <Image source={{ uri: avatar }} style={styles.avatar} />
+          <UserAvatar imageUri={avatarUri} />
           <View style={styles.profileText}>
             <Text style={styles.name}>{displayName}</Text>
             <Text style={styles.phone}>{profile.phone || "Phone not added"}</Text>
@@ -71,7 +70,6 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   content: { paddingHorizontal: 20, paddingTop: 48, paddingBottom: 126 },
   profileCard: { flexDirection: "row", alignItems: "center", backgroundColor: colors.white, borderRadius: 30, padding: 20 },
-  avatar: { width: 86, height: 86, borderRadius: 28 },
   profileText: { flex: 1, marginLeft: 16 },
   name: { color: colors.dark, fontSize: 26, fontWeight: "900" },
   phone: { color: colors.grey, fontSize: 14, fontWeight: "700", marginTop: 5 },

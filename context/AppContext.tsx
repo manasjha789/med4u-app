@@ -3,6 +3,8 @@ import { createContext, ReactNode, useContext, useMemo, useState } from "react";
 export type UserProfile = {
   name: string;
   phone: string;
+  photo?: string;
+  image?: string;
   age: string;
   gender: string;
   height: string;
@@ -19,6 +21,8 @@ export type UserProfile = {
 const defaultProfile: UserProfile = {
   name: "",
   phone: "",
+  photo: "",
+  image: "",
   age: "",
   gender: "",
   height: "",
