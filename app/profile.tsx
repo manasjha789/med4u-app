@@ -1,278 +1,136 @@
-import React, { useState } from "react";
-import {
-  SafeAreaView,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useMemo, useState } from "react";
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import { useApp, UserProfile } from "@/context/AppContext";
+import { colors, PrimaryButton } from "@/components/ui/premium";
 
-export default function ProfileScreen() {
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
-  const [gender, setGender] = useState("");
-  const [height, setHeight] = useState("");
-  const [weight, setWeight] = useState("");
-  const [bloodGroup, setBloodGroup] = useState("");
-  const [disease, setDisease] = useState("");
-  const [allergy, setAllergy] = useState("");
-  const [medication, setMedication] = useState("");
-  const [emergencyContact, setEmergencyContact] = useState("");
+const fields: { label: string; key: keyof UserProfile; keyboard?: "default" | "number-pad" | "phone-pad" }[] = [
+  { label: "Full Name", key: "name" },
+  { label: "Age", key: "age", keyboard: "number-pad" },
+  { label: "Gender", key: "gender" },
+  { label: "Height", key: "height", keyboard: "number-pad" },
+  { label: "Weight", key: "weight", keyboard: "number-pad" },
+  { label: "Blood Group", key: "bloodGroup" },
+  { label: "Existing Conditions", key: "conditions" },
+  { label: "Allergies", key: "allergies" },
+  { label: "Current Medicines", key: "medicines" },
+  { label: "Emergency Contact", key: "emergencyContact", keyboard: "phone-pad" },
+  { label: "Address", key: "address" },
+  { label: "City", key: "city" },
+];
 
-  const handleSave = () => {
+export default function CreateProfileScreen() {
+  const { profile, updateProfile } = useApp();
+  const [values, setValues] = useState<UserProfile>(profile);
+  const completion = useMemo(() => {
+    const filled = fields.filter((field) => values[field.key]?.trim()).length;
+    return Math.max(12, Math.round((filled / fields.length) * 100));
+  }, [values]);
+
+  const setValue = (field: keyof UserProfile, value: string) => {
+    setValues((current) => ({ ...current, [field]: value }));
+  };
+
+  const saveProfile = () => {
+    updateProfile(values);
     router.replace({
-      pathname: "/homeScreen",
-      params: { userName: name.trim() || "User" },
+      pathname: "/(tabs)/homeScreen",
     });
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        
-        {/* Header */}
-        <View style={styles.topArea}>
-          <View style={styles.logoCircle}>
-            <Ionicons name="person" size={44} color="#fff" />
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <View style={styles.iconCircle}>
+            <Ionicons name="person" size={38} color={colors.white} />
           </View>
-
           <Text style={styles.title}>Create Profile</Text>
-          <Text style={styles.subtitle}>
-            Complete your health details for better care
-          </Text>
+          <Text style={styles.subtitle}>Complete your health profile for faster, safer care.</Text>
         </View>
 
-        {/* Form Card */}
+        <View style={styles.progressCard}>
+          <View style={styles.progressTop}>
+            <Text style={styles.progressTitle}>Profile strength</Text>
+            <Text style={styles.progressValue}>{completion}%</Text>
+          </View>
+          <View style={styles.progressTrack}>
+            <View style={[styles.progressFill, { width: `${completion}%` }]} />
+          </View>
+        </View>
+
         <View style={styles.card}>
-          <Text style={styles.heading}>Personal Information</Text>
-
-          {/* Name */}
-          <View style={styles.inputBox}>
-            <Ionicons name="person-outline" size={20} color="#64748B" />
-            <TextInput
-              placeholder="Full Name"
-              value={name}
-              onChangeText={setName}
-              style={styles.input}
-            />
-          </View>
-
-          {/* Age */}
-          <View style={styles.inputBox}>
-            <Ionicons name="calendar-outline" size={20} color="#64748B" />
-            <TextInput
-              placeholder="Age"
-              keyboardType="number-pad"
-              value={age}
-              onChangeText={setAge}
-              style={styles.input}
-            />
-          </View>
-
-          {/* Gender */}
-          <View style={styles.inputBox}>
-            <Ionicons name="male-female-outline" size={20} color="#64748B" />
-            <TextInput
-              placeholder="Gender"
-              value={gender}
-              onChangeText={setGender}
-              style={styles.input}
-            />
-          </View>
-
-          {/* Height */}
-          <View style={styles.inputBox}>
-            <Ionicons name="resize-outline" size={20} color="#64748B" />
-            <TextInput
-              placeholder="Height (cm)"
-              keyboardType="number-pad"
-              value={height}
-              onChangeText={setHeight}
-              style={styles.input}
-            />
-          </View>
-
-          {/* Weight */}
-          <View style={styles.inputBox}>
-            <Ionicons name="barbell-outline" size={20} color="#64748B" />
-            <TextInput
-              placeholder="Weight (kg)"
-              keyboardType="number-pad"
-              value={weight}
-              onChangeText={setWeight}
-              style={styles.input}
-            />
-          </View>
-
-          {/* Blood Group */}
-          <View style={styles.inputBox}>
-            <Ionicons name="water-outline" size={20} color="#64748B" />
-            <TextInput
-              placeholder="Blood Group"
-              value={bloodGroup}
-              onChangeText={setBloodGroup}
-              style={styles.input}
-            />
-          </View>
-
-          <Text style={styles.heading}>Medical Information</Text>
-
-          {/* Disease */}
-          <View style={styles.inputBox}>
-            <Ionicons name="medkit-outline" size={20} color="#64748B" />
-            <TextInput
-              placeholder="Any existing disease?"
-              value={disease}
-              onChangeText={setDisease}
-              style={styles.input}
-            />
-          </View>
-
-          {/* Allergy */}
-          <View style={styles.inputBox}>
-            <Ionicons name="alert-circle-outline" size={20} color="#64748B" />
-            <TextInput
-              placeholder="Any allergy?"
-              value={allergy}
-              onChangeText={setAllergy}
-              style={styles.input}
-            />
-          </View>
-
-          {/* Medication */}
-          <View style={styles.inputBox}>
-            <Ionicons name="flask-outline" size={20} color="#64748B" />
-            <TextInput
-              placeholder="Current medications"
-              value={medication}
-              onChangeText={setMedication}
-              style={styles.input}
-            />
-          </View>
-
-          {/* Emergency Contact */}
-          <View style={styles.inputBox}>
-            <Ionicons name="call-outline" size={20} color="#64748B" />
-            <TextInput
-              placeholder="Emergency Contact Number"
-              keyboardType="phone-pad"
-              value={emergencyContact}
-              onChangeText={setEmergencyContact}
-              style={styles.input}
-            />
-          </View>
-
-          {/* Save Button */}
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleSave}
-          >
-            <Text style={styles.buttonText}>
-              SAVE PROFILE
-            </Text>
-          </TouchableOpacity>
+          {fields.map((field, index) => (
+            <View key={field.key} style={styles.inputWrap}>
+              <Text style={styles.label}>
+                {index + 1}. {field.label}
+              </Text>
+              <TextInput
+                placeholder={field.label}
+                placeholderTextColor="#94A3B8"
+                value={values[field.key] ?? ""}
+                onChangeText={(value) => setValue(field.key, value)}
+                keyboardType={field.keyboard || "default"}
+                style={styles.input}
+              />
+            </View>
+          ))}
+          <PrimaryButton title="Save & Continue" onPress={saveProfile} />
         </View>
-
-        {/* Footer */}
-        <Text style={styles.footer}>
-          Your health data is secure with Med4U
-        </Text>
-
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#EEF4FF",
-  },
-
-  topArea: {
+  container: { flex: 1, backgroundColor: colors.background },
+  content: { paddingHorizontal: 20, paddingTop: 42, paddingBottom: 32 },
+  header: { alignItems: "center", marginBottom: 22 },
+  iconCircle: {
+    width: 88,
+    height: 88,
     alignItems: "center",
-    marginTop: 40,
-  },
-
-  logoCircle: {
-    width: 95,
-    height: 95,
-    borderRadius: 50,
-    backgroundColor: "#2563EB",
     justifyContent: "center",
-    alignItems: "center",
+    borderRadius: 30,
+    backgroundColor: colors.primary,
   },
-
-  title: {
-    fontSize: 30,
-    fontWeight: "800",
-    color: "#0F172A",
-    marginTop: 14,
-  },
-
-  subtitle: {
-    fontSize: 15,
-    color: "#64748B",
-    marginTop: 6,
-  },
-
+  title: { color: colors.dark, fontSize: 30, fontWeight: "900", marginTop: 14 },
+  subtitle: { color: colors.grey, fontSize: 15, fontWeight: "600", textAlign: "center", marginTop: 6 },
+  progressCard: { backgroundColor: colors.white, borderRadius: 22, padding: 18, marginBottom: 16 },
+  progressTop: { flexDirection: "row", justifyContent: "space-between", marginBottom: 12 },
+  progressTitle: { color: colors.dark, fontSize: 16, fontWeight: "900" },
+  progressValue: { color: colors.primary, fontSize: 16, fontWeight: "900" },
+  progressTrack: { height: 8, borderRadius: 99, backgroundColor: "#DCEBFF" },
+  progressFill: { height: "100%", borderRadius: 99, backgroundColor: colors.primary },
   card: {
-    backgroundColor: "#fff",
-    marginHorizontal: 18,
-    marginTop: 24,
-    borderRadius: 28,
-    padding: 24,
+    backgroundColor: colors.white,
+    borderRadius: 30,
+    padding: 20,
+    shadowColor: "#8EA8CE",
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.12,
+    shadowRadius: 20,
+    elevation: 5,
   },
-
-  heading: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#60A5FA",
-    marginBottom: 16,
-    marginTop: 8,
-  },
-
-  inputBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F8FAFC",
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
-    borderRadius: 16,
-    paddingHorizontal: 14,
-    marginBottom: 14,
-  },
-
+  inputWrap: { marginBottom: 14 },
+  label: { color: colors.dark, fontSize: 13, fontWeight: "900", marginBottom: 8 },
   input: {
-    flex: 1,
-    paddingVertical: 15,
-    marginLeft: 10,
+    height: 54,
+    borderRadius: 17,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: "#F8FAFC",
+    paddingHorizontal: 15,
+    color: colors.dark,
     fontSize: 15,
-  },
-
-  button: {
-    backgroundColor: "#2563EB",
-    paddingVertical: 16,
-    borderRadius: 16,
-    alignItems: "center",
-    marginTop: 10,
-  },
-
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "800",
-    letterSpacing: 1,
-  },
-
-  footer: {
-    textAlign: "center",
-    marginVertical: 26,
-    color: "#64748B",
-    fontSize: 14,
+    fontWeight: "700",
   },
 });
