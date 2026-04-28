@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -10,31 +11,70 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { BrandLogo } from "@/components/BrandLogo";
 import { useApp } from "@/context/AppContext";
-import { colors, PrimaryButton } from "@/components/ui/premium";
+import { colors } from "@/components/ui/premium";
 
-const badges = [
-  { label: "24/7 Doctors", icon: "medical-outline" as const },
-  { label: "20 Min Delivery", icon: "bicycle-outline" as const },
-  { label: "Home Lab Test", icon: "flask-outline" as const },
-];
+const primary = "#0F766E";
+const secondary = "#14B8A6";
+
+function TopIllustration() {
+  return (
+    <View pointerEvents="none" style={styles.illustrationWrap}>
+      <View pointerEvents="none" style={styles.leafLarge} />
+      <View pointerEvents="none" style={styles.leafSmall} />
+      <View pointerEvents="none" style={styles.healthBubble}>
+        <Ionicons name="medical" size={25} color={primary} />
+      </View>
+      <View pointerEvents="none" style={styles.pot}>
+        <View pointerEvents="none" style={styles.potLip} />
+      </View>
+      <View pointerEvents="none" style={styles.stem} />
+      <View pointerEvents="none" style={styles.pulseLine}>
+        <Ionicons name="pulse" size={30} color="rgba(255,255,255,0.72)" />
+      </View>
+    </View>
+  );
+}
+
+function LoginField({
+  children,
+  focused,
+}: {
+  children: ReactNode;
+  focused?: boolean;
+}) {
+  return (
+    <View pointerEvents="box-none" style={[styles.inputShell, focused && styles.inputShellFocused]}>
+      {children}
+    </View>
+  );
+}
+
+function SocialButton({
+  label,
+  icon,
+  color,
+}: {
+  label: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  color: string;
+}) {
+  return (
+    <TouchableOpacity style={styles.socialButton} activeOpacity={0.82} accessibilityLabel={`Continue with ${label}`}>
+      <Ionicons name={icon} size={21} color={color} />
+    </TouchableOpacity>
+  );
+}
 
 export default function LoginScreen() {
   const { updateProfile } = useApp();
   const [mobile, setMobile] = useState("");
-  const [referralOpen, setReferralOpen] = useState(false);
-  const [referral, setReferral] = useState("");
-  const [accepted, setAccepted] = useState(true);
   const [error, setError] = useState("");
+  const [mobileFocused, setMobileFocused] = useState(false);
 
   const handleContinue = () => {
     if (mobile.trim().length !== 10) {
       setError("Enter a valid 10 digit mobile number.");
-      return;
-    }
-    if (!accepted) {
-      setError("Please accept Terms and Privacy Policy to continue.");
       return;
     }
     updateProfile({ phone: `+91 ${mobile.trim()}` });
@@ -44,77 +84,80 @@ export default function LoginScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <View style={styles.hero}>
-          <BrandLogo />
-          <Text style={styles.loginCopy}>Premium care that feels personal, fast, and reliable.</Text>
-        </View>
+        <LinearGradient colors={[primary, secondary]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.hero}>
+          <View pointerEvents="none" style={styles.softCircleOne} />
+          <View pointerEvents="none" style={styles.softCircleTwo} />
+          <View style={styles.heroText}>
+            <Text style={styles.hello}>Hello!</Text>
+            <Text style={styles.welcome}>Welcome to Med4U</Text>
+          </View>
+          <TopIllustration />
+        </LinearGradient>
 
-        <View style={styles.badgeRow}>
-          {badges.map((badge) => (
-            <View key={badge.label} style={styles.badge}>
-              <Ionicons name={badge.icon} size={18} color={colors.primary} />
-              <Text style={styles.badgeText}>{badge.label}</Text>
-            </View>
-          ))}
-        </View>
+        <View style={styles.loginCard}>
+          <Text style={styles.title}>Login</Text>
+          <Text style={styles.helperText}>Enter your mobile number to receive a secure OTP.</Text>
 
-        <View style={styles.card}>
-          <Text style={styles.heading}>Login with mobile</Text>
-          <Text style={styles.subHeading}>We will send a secure OTP for verification.</Text>
-
-          <View style={styles.phoneRow}>
-            <TouchableOpacity style={styles.countryPicker} activeOpacity={0.8}>
+          <View pointerEvents="box-none" style={styles.phoneRow}>
+            <TouchableOpacity style={styles.countryBox} activeOpacity={0.82}>
               <Text style={styles.countryText}>+91</Text>
-              <Ionicons name="chevron-down" size={16} color={colors.grey} />
+              <Ionicons name="chevron-down" size={15} color="#64748B" />
             </TouchableOpacity>
-            <TextInput
-              placeholder="Mobile number"
-              placeholderTextColor="#94A3B8"
-              keyboardType="phone-pad"
-              maxLength={10}
-              value={mobile}
-              onChangeText={(value) => {
-                setMobile(value.replace(/\D/g, ""));
-                setError("");
-              }}
-              style={styles.mobileInput}
-            />
+
+            <LoginField focused={mobileFocused}>
+              <Ionicons
+                pointerEvents="none"
+                name="call-outline"
+                size={19}
+                color={mobileFocused ? primary : "#94A3B8"}
+                style={styles.inputIcon}
+              />
+              <TextInput
+                editable={true}
+                placeholder="Mobile Number"
+                placeholderTextColor="#94A3B8"
+                keyboardType="phone-pad"
+                maxLength={10}
+                value={mobile}
+                onFocus={() => setMobileFocused(true)}
+                onBlur={() => setMobileFocused(false)}
+                onChangeText={(value) => {
+                  setMobile(value.replace(/\D/g, ""));
+                  setError("");
+                }}
+                style={styles.mobileInput}
+              />
+            </LoginField>
           </View>
 
           {error ? <Text style={styles.error}>{error}</Text> : null}
 
-          <TouchableOpacity
-            style={styles.referralToggle}
-            activeOpacity={0.8}
-            onPress={() => setReferralOpen((value) => !value)}
-          >
-            <Ionicons name="gift-outline" size={20} color={colors.warning} />
-            <Text style={styles.referralTitle}>Have a referral code?</Text>
-            <Ionicons name={referralOpen ? "chevron-up" : "chevron-down"} size={18} color={colors.grey} />
+          <TouchableOpacity style={styles.forgotRow} activeOpacity={0.72}>
+            <Text style={styles.forgotText}>Forgot Password?</Text>
           </TouchableOpacity>
 
-          {referralOpen ? (
-            <View style={styles.inputBox}>
-              <TextInput
-                placeholder="Referral code"
-                placeholderTextColor="#94A3B8"
-                value={referral}
-                onChangeText={setReferral}
-                style={styles.input}
-              />
-            </View>
-          ) : null}
-
-          <TouchableOpacity style={styles.termsRow} activeOpacity={0.8} onPress={() => setAccepted(!accepted)}>
-            <Ionicons
-              name={accepted ? "checkbox" : "square-outline"}
-              size={22}
-              color={accepted ? colors.primary : colors.grey}
-            />
-            <Text style={styles.termsText}>I agree to Terms, Privacy Policy and health updates.</Text>
+          <TouchableOpacity style={styles.loginButton} activeOpacity={0.88} onPress={handleContinue}>
+            <Text style={styles.loginButtonText}>Login</Text>
           </TouchableOpacity>
 
-          <PrimaryButton title="Continue" onPress={handleContinue} />
+          <View style={styles.dividerRow}>
+            <View style={styles.divider} />
+            <Text style={styles.dividerText}>Or login with</Text>
+            <View style={styles.divider} />
+          </View>
+
+          <View style={styles.socialRow}>
+            <SocialButton label="Facebook" icon="logo-facebook" color="#1877F2" />
+            <SocialButton label="Google" icon="logo-google" color="#DB4437" />
+            <SocialButton label="Apple" icon="logo-apple" color="#111827" />
+          </View>
+
+          <View style={styles.signupRow}>
+            <Text style={styles.signupText}>Don&apos;t have an account? </Text>
+            <TouchableOpacity activeOpacity={0.72}>
+              <Text style={styles.signupLink}>Sign Up</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -122,80 +165,218 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
-  content: { paddingHorizontal: 20, paddingTop: 42, paddingBottom: 28 },
-  hero: { alignItems: "center" },
-  loginCopy: {
-    color: colors.grey,
-    fontSize: 14,
-    fontWeight: "700",
-    lineHeight: 20,
-    textAlign: "center",
-    marginTop: 12,
-    maxWidth: 280,
+  container: { flex: 1, backgroundColor: "#F8FAFC" },
+  content: { flexGrow: 1, backgroundColor: "#F8FAFC" },
+  hero: {
+    minHeight: 330,
+    paddingHorizontal: 28,
+    paddingTop: 44,
+    paddingBottom: 56,
+    overflow: "hidden",
   },
-  badgeRow: { flexDirection: "row", gap: 10, marginTop: 24 },
-  badge: {
-    flex: 1,
-    alignItems: "center",
-    backgroundColor: colors.white,
-    borderRadius: 18,
-    paddingVertical: 14,
-    paddingHorizontal: 8,
+  softCircleOne: {
+    position: "absolute",
+    top: -54,
+    right: -42,
+    width: 172,
+    height: 172,
+    borderRadius: 86,
+    backgroundColor: "rgba(255,255,255,0.14)",
   },
-  badgeText: { color: colors.dark, fontSize: 11, fontWeight: "800", marginTop: 7, textAlign: "center" },
-  card: {
-    backgroundColor: colors.white,
-    borderRadius: 30,
-    padding: 22,
-    marginTop: 22,
-    shadowColor: "#8EA8CE",
-    shadowOffset: { width: 0, height: 14 },
-    shadowOpacity: 0.13,
-    shadowRadius: 20,
-    elevation: 5,
+  softCircleTwo: {
+    position: "absolute",
+    left: -58,
+    bottom: 28,
+    width: 144,
+    height: 144,
+    borderRadius: 72,
+    backgroundColor: "rgba(255,255,255,0.12)",
   },
-  heading: { color: colors.dark, fontSize: 23, fontWeight: "900" },
-  subHeading: { color: colors.grey, fontSize: 14, lineHeight: 20, marginTop: 7, marginBottom: 20 },
-  phoneRow: { flexDirection: "row", gap: 10 },
-  countryPicker: {
+  heroText: { zIndex: 2 },
+  hello: { color: colors.white, fontSize: 38, fontWeight: "900", letterSpacing: 0 },
+  welcome: { color: "rgba(255,255,255,0.9)", fontSize: 15, fontWeight: "700", marginTop: 4 },
+  illustrationWrap: {
+    position: "absolute",
+    right: 28,
+    bottom: 28,
+    width: 178,
+    height: 178,
+  },
+  leafLarge: {
+    position: "absolute",
+    right: 25,
+    top: 18,
+    width: 44,
+    height: 104,
+    borderTopLeftRadius: 44,
+    borderBottomRightRadius: 44,
+    backgroundColor: "rgba(187,247,208,0.82)",
+    transform: [{ rotate: "18deg" }],
+  },
+  leafSmall: {
+    position: "absolute",
+    left: 38,
+    top: 48,
+    width: 62,
+    height: 34,
+    borderTopLeftRadius: 34,
+    borderBottomRightRadius: 34,
+    backgroundColor: "rgba(204,251,241,0.78)",
+    transform: [{ rotate: "28deg" }],
+  },
+  healthBubble: {
+    position: "absolute",
+    left: 12,
+    top: 8,
+    width: 58,
     height: 58,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 29,
+    backgroundColor: colors.white,
+    shadowColor: "#064E3B",
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.16,
+    shadowRadius: 18,
+    elevation: 6,
+  },
+  pot: {
+    position: "absolute",
+    right: 32,
+    bottom: 0,
+    width: 78,
+    height: 58,
+    borderBottomLeftRadius: 22,
+    borderBottomRightRadius: 22,
+    backgroundColor: colors.white,
+    shadowColor: "#064E3B",
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.16,
+    shadowRadius: 18,
+    elevation: 6,
+  },
+  potLip: {
+    position: "absolute",
+    top: -10,
+    left: -8,
+    width: 94,
+    height: 22,
+    borderRadius: 12,
+    backgroundColor: "#F8FAFC",
+  },
+  stem: {
+    position: "absolute",
+    right: 74,
+    top: 72,
+    width: 6,
+    height: 72,
+    borderRadius: 3,
+    backgroundColor: "rgba(220,252,231,0.95)",
+    transform: [{ rotate: "9deg" }],
+  },
+  pulseLine: { position: "absolute", left: 2, bottom: 44 },
+  loginCard: {
+    flex: 1,
+    marginTop: -28,
+    paddingHorizontal: 26,
+    paddingTop: 30,
+    paddingBottom: 30,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    backgroundColor: colors.white,
+    shadowColor: "#0F766E",
+    shadowOffset: { width: 0, height: -8 },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
+    elevation: 8,
+    zIndex: 5,
+  },
+  title: { color: primary, fontSize: 25, fontWeight: "900", letterSpacing: 0 },
+  helperText: { color: "#64748B", fontSize: 13, lineHeight: 19, fontWeight: "600", marginTop: 7, marginBottom: 22 },
+  phoneRow: { flexDirection: "row", alignItems: "center", gap: 10, zIndex: 6 },
+  countryBox: {
+    height: 54,
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    paddingHorizontal: 14,
+    paddingHorizontal: 13,
     borderRadius: 18,
-    borderWidth: 1,
-    borderColor: colors.border,
     backgroundColor: "#F8FAFC",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
   },
-  countryText: { color: colors.dark, fontSize: 16, fontWeight: "900" },
-  mobileInput: {
+  countryText: { color: "#0F172A", fontSize: 15, fontWeight: "900" },
+  inputShell: {
     flex: 1,
-    height: 58,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: "#F8FAFC",
-    paddingHorizontal: 16,
-    color: colors.dark,
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  error: { color: colors.danger, fontSize: 13, fontWeight: "700", marginTop: 10 },
-  referralToggle: { flexDirection: "row", alignItems: "center", gap: 10, marginTop: 18, marginBottom: 12 },
-  referralTitle: { flex: 1, color: colors.dark, fontSize: 15, fontWeight: "800" },
-  inputBox: {
     height: 54,
-    justifyContent: "center",
-    borderRadius: 17,
-    borderWidth: 1,
-    borderColor: colors.border,
+    borderRadius: 18,
     backgroundColor: "#F8FAFC",
-    paddingHorizontal: 16,
-    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    overflow: "hidden",
+    zIndex: 7,
   },
-  input: { color: colors.dark, fontSize: 15, fontWeight: "700" },
-  termsRow: { flexDirection: "row", alignItems: "center", gap: 10, marginVertical: 18 },
-  termsText: { flex: 1, color: colors.grey, fontSize: 13, lineHeight: 18, fontWeight: "600" },
+  inputShellFocused: {
+    borderColor: "#5EEAD4",
+    shadowColor: secondary,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 14,
+    elevation: 2,
+  },
+  mobileInput: {
+    width: "100%",
+    height: "100%",
+    flex: 1,
+    color: "#0F172A",
+    fontSize: 15,
+    fontWeight: "700",
+    paddingVertical: 0,
+    paddingLeft: 43,
+    paddingRight: 15,
+  },
+  inputIcon: {
+    position: "absolute",
+    left: 15,
+    top: 17,
+    zIndex: 8,
+  },
+  error: { color: colors.danger, fontSize: 12, fontWeight: "700", marginTop: 9 },
+  forgotRow: { alignSelf: "flex-end", marginTop: 13, marginBottom: 18 },
+  forgotText: { color: primary, fontSize: 12, fontWeight: "800" },
+  loginButton: {
+    minHeight: 52,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 26,
+    backgroundColor: primary,
+    shadowColor: primary,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.22,
+    shadowRadius: 16,
+    elevation: 5,
+  },
+  loginButtonText: { color: colors.white, fontSize: 16, fontWeight: "900" },
+  dividerRow: { flexDirection: "row", alignItems: "center", gap: 12, marginTop: 24, marginBottom: 16 },
+  divider: { flex: 1, height: 1, backgroundColor: "#E2E8F0" },
+  dividerText: { color: "#94A3B8", fontSize: 12, fontWeight: "700" },
+  socialRow: { flexDirection: "row", justifyContent: "center", gap: 13 },
+  socialButton: {
+    width: 48,
+    height: 42,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 12,
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    shadowColor: "#64748B",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 2,
+  },
+  signupRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 24 },
+  signupText: { color: "#64748B", fontSize: 12, fontWeight: "700" },
+  signupLink: { color: primary, fontSize: 12, fontWeight: "900" },
 });
