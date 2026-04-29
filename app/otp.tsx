@@ -45,7 +45,7 @@ export default function OtpScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView style={styles.wrapper} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-        <LinearGradient colors={["#ECFDF5", "#F8FAFC"]} style={styles.backgroundGlow}>
+        <LinearGradient colors={[colors.successMint, colors.background]} style={styles.backgroundGlow}>
           <View style={styles.card}>
             <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.82}>
               <Ionicons name="chevron-back" size={25} color={authColors.text} />
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     paddingTop: 56,
     paddingBottom: 30,
-    shadowColor: "#0F766E",
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 18 },
     shadowOpacity: 0.16,
     shadowRadius: 24,
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 17,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: colors.soft,
   },
   iconCircle: {
     width: 104,

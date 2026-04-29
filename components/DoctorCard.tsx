@@ -36,7 +36,7 @@ export function DoctorCard({
         </Text>
         <Text style={styles.specialty}>{specialty}</Text>
         <View style={styles.metaRow}>
-          <Ionicons name="star" size={13} color="#F59E0B" />
+          <Ionicons name="star" size={13} color={colors.accentPurple} />
           <Text style={styles.meta}>{rating}</Text>
           <Text style={styles.sep}>•</Text>
           <Text style={styles.meta}>{experience}</Text>
@@ -59,17 +59,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     padding: 14,
     marginRight: 14,
-    shadowColor: "#8EA8CE",
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 14 },
-    shadowOpacity: 0.12,
-    shadowRadius: 20,
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
     elevation: 5,
   },
   image: {
     width: "100%",
     height: 126,
     borderRadius: 22,
-    backgroundColor: "#DCEBFF",
+    backgroundColor: colors.paleMint,
   },
   body: {
     marginTop: 13,
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
   bookPill: {
     borderRadius: 999,
-    backgroundColor: "#EAF2FF",
+    backgroundColor: colors.paleMint,
     paddingHorizontal: 14,
     paddingVertical: 8,
   },

@@ -2,6 +2,7 @@ import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
 import { PressScale } from "@/components/PressScale";
+import { colors } from "@/components/ui/premium";
 
 const icons: Record<string, keyof typeof Ionicons.glyphMap> = {
   homeScreen: "home-outline",
@@ -47,7 +48,7 @@ export function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarP
               }}
             >
               <View style={[styles.iconCircle, focused && styles.activeIconCircle]}>
-                <Ionicons name={icons[route.name] || "ellipse-outline"} size={22} color={focused ? "#FFFFFF" : "#0F172A"} />
+                <Ionicons name={icons[route.name] || "ellipse-outline"} size={22} color={focused ? colors.white : "#94A3B8"} />
               </View>
               <Text style={[styles.label, focused && styles.activeLabel]} numberOfLines={1}>
                 {label}
@@ -75,10 +76,10 @@ const styles = StyleSheet.create({
     borderRadius: 39,
     backgroundColor: "rgba(255,255,255,0.96)",
     paddingHorizontal: 12,
-    shadowColor: "#8EA8CE",
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 20 },
-    shadowOpacity: 0.2,
-    shadowRadius: 30,
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
     elevation: 12,
   },
   item: {
@@ -93,23 +94,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 21,
-    backgroundColor: "#F3F6FA",
+    backgroundColor: colors.soft,
   },
   activeIconCircle: {
-    backgroundColor: "#111111",
-    shadowColor: "#111111",
+    backgroundColor: colors.primary,
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.2,
-    shadowRadius: 15,
+    shadowOpacity: 0.16,
+    shadowRadius: 14,
     elevation: 7,
   },
   label: {
-    color: "#64748B",
+    color: colors.grey,
     fontSize: 10,
     fontWeight: "800",
     marginTop: 4,
   },
   activeLabel: {
-    color: "#2563EB",
+    color: colors.primary,
   },
 });

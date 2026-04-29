@@ -75,10 +75,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 18,
     backgroundColor: "rgba(255,255,255,0.86)",
-    shadowColor: "#8EA8CE",
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.12,
-    shadowRadius: 18,
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
     elevation: 4,
   },
   dot: {

@@ -10,17 +10,23 @@ import {
 } from "react-native";
 
 export const colors = {
-  background: "#EEF4FF",
-  primary: "#2563EB",
-  lightBlue: "#60A5FA",
+  background: "#F8FAFC",
+  primary: "#0F766E",
+  secondary: "#14B8A6",
+  lightBlue: "#14B8A6",
   dark: "#0F172A",
   grey: "#64748B",
   white: "#FFFFFF",
+  card: "#FFFFFF",
+  successMint: "#ECFDF5",
+  accentPurple: "#0F766E",
   success: "#16A34A",
-  warning: "#F59E0B",
+  warning: "#0F766E",
   danger: "#EF4444",
-  border: "#D6E0EF",
+  border: "#E2E8F0",
   soft: "#F8FAFC",
+  mint: "#CCFBF1",
+  paleMint: "#F0FDFA",
 };
 
 type IconName = keyof typeof Ionicons.glyphMap;
@@ -186,10 +192,10 @@ export const shared = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 22,
     padding: 16,
-    shadowColor: "#8EA8CE",
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.12,
-    shadowRadius: 18,
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
     elevation: 4,
   },
   iconCircle: {
@@ -232,10 +238,10 @@ export const shared = StyleSheet.create({
     borderRadius: 22,
     padding: 14,
     marginRight: 14,
-    shadowColor: "#8EA8CE",
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.11,
-    shadowRadius: 18,
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
     elevation: 4,
   },
   doctorAvatar: {
@@ -255,8 +261,8 @@ export const shared = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 22,
-    backgroundColor: "#F8FBFF",
+    backgroundColor: colors.soft,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: colors.border,
   },
 });

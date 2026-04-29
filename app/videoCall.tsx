@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   patient: { position: "absolute", right: 18, top: 18, width: 96, height: 124, alignItems: "center", justifyContent: "center", borderRadius: 26, backgroundColor: colors.white },
   doctorInfo: { position: "absolute", left: 18, right: 18, bottom: 18, backgroundColor: "rgba(15,23,42,0.62)", borderRadius: 22, padding: 16 },
   name: { color: colors.white, fontSize: 23, fontWeight: "900" },
-  meta: { color: "#DBEAFE", fontSize: 14, fontWeight: "700", marginTop: 4 },
+  meta: { color: "rgba(255,255,255,0.86)", fontSize: 14, fontWeight: "700", marginTop: 4 },
   controls: { flexDirection: "row", justifyContent: "center", gap: 13, marginVertical: 20 },
   control: { width: 58, height: 58, alignItems: "center", justifyContent: "center", borderRadius: 22, backgroundColor: colors.white },
   end: { width: 62, height: 62, alignItems: "center", justifyContent: "center", borderRadius: 24, backgroundColor: colors.danger, transform: [{ rotate: "135deg" }] },

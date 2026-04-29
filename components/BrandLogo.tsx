@@ -8,7 +8,7 @@ export function BrandMark({ size = 72 }: { size?: number }) {
 
   return (
     <LinearGradient
-      colors={["#60A5FA", "#2563EB"]}
+      colors={[colors.secondary, colors.primary]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={[styles.mark, { width: size, height: size, borderRadius: size * 0.32 }]}

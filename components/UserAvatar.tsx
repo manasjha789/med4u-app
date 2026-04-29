@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image, StyleSheet, View } from "react-native";
+import { colors } from "@/components/ui/premium";
 
 type UserAvatarProps = {
   imageUri?: string;
@@ -26,10 +27,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
-    shadowColor: "#8EA8CE",
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.14,
-    shadowRadius: 18,
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
     elevation: 5,
   },
 });

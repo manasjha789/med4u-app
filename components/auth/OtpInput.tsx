@@ -93,12 +93,12 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 1,
     borderColor: authColors.border,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: authColors.field,
     color: authColors.text,
     textAlign: "center",
     fontSize: 23,
     fontWeight: "900",
-    shadowColor: "#8EA8CE",
+    shadowColor: authColors.primary,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.08,
     shadowRadius: 12,
@@ -106,9 +106,9 @@ const styles = StyleSheet.create({
   },
   boxFocused: {
     borderColor: authColors.primary,
-    backgroundColor: "#F0FDFA",
+    backgroundColor: authColors.field,
   },
   boxFilled: {
-    borderColor: "#5EEAD4",
+    borderColor: authColors.secondary,
   },
 });

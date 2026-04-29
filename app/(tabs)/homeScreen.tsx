@@ -5,19 +5,7 @@ import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } fr
 import { PressScale } from "@/components/PressScale";
 import { UserAvatar } from "@/components/UserAvatar";
 import { useApp } from "@/context/AppContext";
-
-const colors = {
-  background: "#EEF4FF",
-  primary: "#2F6BFF",
-  dark: "#111827",
-  grey: "#6B7280",
-  white: "#FFFFFF",
-  mint: "#EAF8F3",
-  purple: "#8B5CF6",
-  orange: "#F59E0B",
-  teal: "#14B8A6",
-  border: "#E4ECF8",
-};
+import { colors } from "@/components/ui/premium";
 
 const doctorImage =
   "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=260&q=80";
@@ -33,9 +21,9 @@ const quickActions: {
   route: string;
 }[] = [
   { title: "Consult", icon: "stethoscope", iconSet: "material", color: colors.primary, route: "/bookDoctor" },
-  { title: "Order", icon: "medical-bag", iconSet: "material", color: colors.teal, route: "/(tabs)/medicine" },
-  { title: "Lab", icon: "flask-outline", iconSet: "ion", color: colors.purple, route: "/reports" },
-  { title: "Health", icon: "document-text-outline", iconSet: "ion", color: colors.orange, route: "/reports" },
+  { title: "Order", icon: "medical-bag", iconSet: "material", color: colors.primary, route: "/(tabs)/medicine" },
+  { title: "Lab", icon: "flask-outline", iconSet: "ion", color: colors.primary, route: "/reports" },
+  { title: "Health", icon: "document-text-outline", iconSet: "ion", color: colors.primary, route: "/reports" },
 ];
 
 const specialists: {
@@ -45,10 +33,10 @@ const specialists: {
   iconSet: "ion" | "material";
   color: string;
 }[] = [
-  { name: "Cardio", count: "45+ Doctors", icon: "heart", iconSet: "ion", color: "#F43F5E" },
-  { name: "Neuro", count: "40+ Doctors", icon: "brain", iconSet: "material", color: colors.orange },
-  { name: "Dentist", count: "30+ Doctors", icon: "tooth-outline", iconSet: "material", color: colors.teal },
-  { name: "Skin", count: "25+ Doctors", icon: "person-outline", iconSet: "ion", color: colors.purple },
+  { name: "Cardio", count: "45+ Doctors", icon: "heart", iconSet: "ion", color: colors.primary },
+  { name: "Neuro", count: "40+ Doctors", icon: "brain", iconSet: "material", color: colors.primary },
+  { name: "Dentist", count: "30+ Doctors", icon: "tooth-outline", iconSet: "material", color: colors.primary },
+  { name: "Skin", count: "25+ Doctors", icon: "person-outline", iconSet: "ion", color: colors.primary },
 ];
 
 function SectionHeader({ title, onPress }: { title: string; onPress?: () => void }) {
@@ -67,7 +55,7 @@ function Header({ name, avatarUri }: { name: string; avatarUri?: string }) {
     <View style={styles.header}>
       <View style={styles.headerCopy}>
         <Text style={styles.greeting} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.86}>
-          Hello, {name} 👋
+          Hello, {name}
         </Text>
         <Text style={styles.morning}>Good Morning</Text>
       </View>
@@ -125,7 +113,7 @@ function QuickActionGrid() {
 function HeroBanner() {
   return (
     <LinearGradient
-      colors={["#2563EB", "#4F9BFF"]}
+      colors={[colors.primary, colors.secondary]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.heroBanner}
@@ -143,7 +131,8 @@ function HeroBanner() {
       </View>
       <Image source={{ uri: doctorImage }} style={styles.heroDoctor} />
       <PressScale style={styles.bookButton} onPress={() => router.push("/bookDoctor")}>
-        <Text style={styles.bookText}>Book Now →</Text>
+        <Text style={styles.bookText}>Book Now</Text>
+        <Ionicons name="arrow-forward" size={16} color={colors.primary} />
       </PressScale>
     </LinearGradient>
   );
@@ -171,7 +160,7 @@ function NextAppointment() {
 
       <View style={styles.appointmentMeta}>
         <View style={styles.videoMeta}>
-          <Ionicons name="videocam" size={18} color={colors.purple} />
+          <Ionicons name="videocam" size={18} color={colors.primary} />
         </View>
         <View style={styles.dateMetaItem}>
           <Ionicons name="calendar-outline" size={18} color={colors.dark} />
@@ -262,10 +251,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 28,
     backgroundColor: colors.white,
-    shadowColor: "#9DB2D3",
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 14 },
-    shadowOpacity: 0.16,
-    shadowRadius: 24,
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
     elevation: 8,
   },
   notificationDot: {
@@ -287,10 +276,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     paddingLeft: 16,
     paddingRight: 8,
-    shadowColor: "#9DB2D3",
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 13 },
-    shadowOpacity: 0.12,
-    shadowRadius: 24,
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
     elevation: 6,
   },
   searchInput: { flex: 1, minWidth: 0, marginLeft: 10, color: colors.dark, fontSize: 15, fontWeight: "700" },
@@ -316,10 +305,10 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     backgroundColor: colors.white,
     paddingHorizontal: 10,
-    shadowColor: "#9DB2D3",
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 14 },
-    shadowOpacity: 0.12,
-    shadowRadius: 24,
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
     elevation: 6,
   },
   quickText: {
@@ -339,8 +328,8 @@ const styles = StyleSheet.create({
     marginTop: 22,
     shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 15 },
-    shadowOpacity: 0.24,
-    shadowRadius: 24,
+    shadowOpacity: 0.16,
+    shadowRadius: 18,
     elevation: 8,
   },
   videoIconBox: {
@@ -385,16 +374,18 @@ const styles = StyleSheet.create({
   appointmentCard: {
     height: 190,
     borderRadius: 24,
-    backgroundColor: colors.mint,
+    backgroundColor: colors.white,
+    borderLeftWidth: 5,
+    borderLeftColor: colors.secondary,
     paddingTop: 16,
     paddingLeft: 18,
     paddingRight: 18,
     paddingBottom: 18,
     marginTop: 30,
-    shadowColor: "#99C7BB",
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 18 },
-    shadowOpacity: 0.16,
-    shadowRadius: 28,
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
     elevation: 8,
   },
   appointmentHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
@@ -461,10 +452,10 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     backgroundColor: colors.white,
     paddingVertical: 10,
-    shadowColor: "#9DB2D3",
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.1,
-    shadowRadius: 22,
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
     elevation: 5,
   },
   specialistName: {
@@ -476,3 +467,4 @@ const styles = StyleSheet.create({
   },
   specialistCount: { color: colors.grey, fontSize: 11, fontWeight: "700", marginTop: 5, textAlign: "center" },
 });
+

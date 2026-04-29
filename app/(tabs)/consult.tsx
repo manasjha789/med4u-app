@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
   heroTitle: { color: colors.white, fontSize: 23, fontWeight: "900" },
-  heroText: { color: "#DBEAFE", fontSize: 14, fontWeight: "700", marginTop: 6, maxWidth: 230 },
+  heroText: { color: "rgba(255,255,255,0.86)", fontSize: 14, fontWeight: "700", marginTop: 6, maxWidth: 230 },
   grid: { gap: 14 },
   service: { minHeight: 92 },
 });

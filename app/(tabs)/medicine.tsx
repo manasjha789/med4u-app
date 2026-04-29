@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, marginLeft: 10, color: colors.dark, fontSize: 15, fontWeight: "700" },
   offer: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", backgroundColor: colors.primary, borderRadius: 26, padding: 20, marginTop: 18 },
   offerTitle: { color: colors.white, fontSize: 23, fontWeight: "900" },
-  offerText: { color: "#DBEAFE", fontSize: 13, fontWeight: "700", marginTop: 6, maxWidth: 245 },
+  offerText: { color: "rgba(255,255,255,0.86)", fontSize: 13, fontWeight: "700", marginTop: 6, maxWidth: 245 },
   brandRow: { gap: 10 },
   brand: { overflow: "hidden", color: colors.dark, fontSize: 14, fontWeight: "900", backgroundColor: colors.white, borderRadius: 16, paddingHorizontal: 16, paddingVertical: 12 },
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 12 },

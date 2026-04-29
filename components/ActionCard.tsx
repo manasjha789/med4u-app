@@ -35,10 +35,10 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     backgroundColor: colors.white,
     padding: 16,
-    shadowColor: "#8EA8CE",
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.11,
-    shadowRadius: 18,
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
     elevation: 4,
   },
   iconWrap: {
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 16,
-    backgroundColor: "#EEF4FF",
+    backgroundColor: colors.soft,
   },
   title: {
     color: colors.dark,

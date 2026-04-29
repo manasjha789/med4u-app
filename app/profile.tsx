@@ -13,8 +13,8 @@ import { UserAvatar } from "@/components/UserAvatar";
 import { useApp, UserProfile } from "@/context/AppContext";
 import { colors } from "@/components/ui/premium";
 
-const primary = "#0F766E";
-const softTeal = "#CCFBF1";
+const primary = colors.primary;
+const softTeal = colors.mint;
 
 const fields: { label: string; key: keyof UserProfile; keyboard?: "default" | "number-pad" | "phone-pad" }[] = [
   { label: "Full Name", key: "name" },
@@ -96,7 +96,7 @@ export default function CreateProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#ECFDF5" },
+  container: { flex: 1, backgroundColor: colors.background },
   content: { paddingHorizontal: 20, paddingTop: 42, paddingBottom: 32 },
   header: { alignItems: "center", marginBottom: 22 },
   title: { color: colors.dark, fontSize: 30, fontWeight: "900", marginTop: 14 },
@@ -111,10 +111,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 30,
     padding: 20,
-    shadowColor: "#0F766E",
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 14 },
-    shadowOpacity: 0.12,
-    shadowRadius: 20,
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
     elevation: 5,
   },
   inputWrap: { marginBottom: 14 },
@@ -123,8 +123,8 @@ const styles = StyleSheet.create({
     height: 54,
     borderRadius: 17,
     borderWidth: 1,
-    borderColor: "#D7E7E4",
-    backgroundColor: "#F8FAFC",
+    borderColor: colors.border,
+    backgroundColor: colors.soft,
     paddingHorizontal: 15,
     color: colors.dark,
     fontSize: 15,

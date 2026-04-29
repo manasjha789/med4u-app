@@ -14,8 +14,8 @@ import {
 import { useApp } from "@/context/AppContext";
 import { colors } from "@/components/ui/premium";
 
-const primary = "#0F766E";
-const secondary = "#14B8A6";
+const primary = colors.primary;
+const secondary = colors.secondary;
 
 function TopIllustration() {
   return (
@@ -101,7 +101,7 @@ export default function LoginScreen() {
           <View pointerEvents="box-none" style={styles.phoneRow}>
             <TouchableOpacity style={styles.countryBox} activeOpacity={0.82}>
               <Text style={styles.countryText}>+91</Text>
-              <Ionicons name="chevron-down" size={15} color="#64748B" />
+              <Ionicons name="chevron-down" size={15} color={colors.grey} />
             </TouchableOpacity>
 
             <LoginField focused={mobileFocused}>
@@ -165,8 +165,8 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F8FAFC" },
-  content: { flexGrow: 1, backgroundColor: "#F8FAFC" },
+  container: { flex: 1, backgroundColor: colors.background },
+  content: { flexGrow: 1, backgroundColor: colors.background },
   hero: {
     minHeight: 330,
     paddingHorizontal: 28,
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 29,
     backgroundColor: colors.white,
-    shadowColor: "#064E3B",
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.16,
     shadowRadius: 18,
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 22,
     borderBottomRightRadius: 22,
     backgroundColor: colors.white,
-    shadowColor: "#064E3B",
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 14 },
     shadowOpacity: 0.16,
     shadowRadius: 18,
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     width: 94,
     height: 22,
     borderRadius: 12,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: colors.background,
   },
   stem: {
     position: "absolute",
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     backgroundColor: colors.white,
-    shadowColor: "#0F766E",
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: -8 },
     shadowOpacity: 0.1,
     shadowRadius: 20,
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     zIndex: 5,
   },
   title: { color: primary, fontSize: 25, fontWeight: "900", letterSpacing: 0 },
-  helperText: { color: "#64748B", fontSize: 13, lineHeight: 19, fontWeight: "600", marginTop: 7, marginBottom: 22 },
+  helperText: { color: colors.grey, fontSize: 13, lineHeight: 19, fontWeight: "600", marginTop: 7, marginBottom: 22 },
   phoneRow: { flexDirection: "row", alignItems: "center", gap: 10, zIndex: 6 },
   countryBox: {
     height: 54,
@@ -301,23 +301,23 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: 13,
     borderRadius: 18,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: colors.soft,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: colors.border,
   },
-  countryText: { color: "#0F172A", fontSize: 15, fontWeight: "900" },
+  countryText: { color: colors.dark, fontSize: 15, fontWeight: "900" },
   inputShell: {
     flex: 1,
     height: 54,
     borderRadius: 18,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: colors.soft,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: colors.border,
     overflow: "hidden",
     zIndex: 7,
   },
   inputShellFocused: {
-    borderColor: "#5EEAD4",
+    borderColor: colors.secondary,
     shadowColor: secondary,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.12,
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     flex: 1,
-    color: "#0F172A",
+    color: colors.dark,
     fontSize: 15,
     fontWeight: "700",
     paddingVertical: 0,
@@ -358,7 +358,7 @@ const styles = StyleSheet.create({
   },
   loginButtonText: { color: colors.white, fontSize: 16, fontWeight: "900" },
   dividerRow: { flexDirection: "row", alignItems: "center", gap: 12, marginTop: 24, marginBottom: 16 },
-  divider: { flex: 1, height: 1, backgroundColor: "#E2E8F0" },
+  divider: { flex: 1, height: 1, backgroundColor: colors.border },
   dividerText: { color: "#94A3B8", fontSize: 12, fontWeight: "700" },
   socialRow: { flexDirection: "row", justifyContent: "center", gap: 13 },
   socialButton: {
@@ -369,14 +369,14 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
-    shadowColor: "#64748B",
+    borderColor: colors.border,
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.08,
     shadowRadius: 12,
     elevation: 2,
   },
   signupRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 24 },
-  signupText: { color: "#64748B", fontSize: 12, fontWeight: "700" },
+  signupText: { color: colors.grey, fontSize: 12, fontWeight: "700" },
   signupLink: { color: primary, fontSize: 12, fontWeight: "900" },
 });
